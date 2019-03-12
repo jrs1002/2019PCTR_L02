@@ -1,3 +1,4 @@
+package PR02_PC;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,6 +18,9 @@ public class Billiards extends JFrame {
 	private JButton b_start, b_stop;
 
 	private Board board;
+	
+	private Thread[] Hilo;
+	private Thread Dibujo;
 
 	// DONE update with number of group label. See practice statement.
 	private final int N_BALL = 3+3;
@@ -63,15 +67,26 @@ public class Billiards extends JFrame {
 	private class StartListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO Code is executed when start button is pushed
-
+			// DONE Code is executed when start button is pushed
+			Dibujo= new Thread(new Dibujo(board));
+			Dibujo.start();
+			Hilo= new Thread[N_BALL+3];
+			for(int i=0;i<balls.length;i++) {
+				Hilo[i]=new Thread(new Hilo(balls[i]));
+				Hilo[i].start();
+			}
 		}
 	}
 
 	private class StopListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO Code is executed when stop button is pushed
+			// Done Code is executed when stop button is pushed
+			Dibujo.interrupt();
+			for(int i=0;i<balls.length;i++) {
+				Hilo[i].interrupt();
+				System.out.println(Hilo[i].getState());
+			}
 
 		}
 	}
